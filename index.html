@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Livestock Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .nav-bar {
+            background: #020617;
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 2rem;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        .nav-bar h2 {
+            color: #3b82f6;
+            margin-right: auto;
+            font-size: 1.3rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: #94a3b8;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .nav-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #334155;
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #3b82f6;
+            font-size: 1.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: #1e293b;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #334155;
+            transition: transform 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-box h2 {
+            font-size: 2rem;
+            color: #3b82f6;
+        }
+
+        .stat-box p {
+            color: #94a3b8;
+            margin-top: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        input, select, textarea {
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-warning {
+            background: #d97706;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #b45309;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-info {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            text-align: left;
+            padding: 0.75rem;
+            background: #0f172a;
+            color: #3b82f6;
+            border-bottom: 2px solid #334155;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #334155;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #0f172a;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .badge-warning {
+            background: #d97706;
+            color: white;
+        }
+
+        .badge-info {
+            background: #06b6d4;
+            color: white;
+        }
+
+        .badge-dark {
+            background: #334155;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons button {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 650px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .modal-header h3 {
+            color: #3b82f6;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #dc2626;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            z-index: 1100;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .toast-error {
+            background: #dc2626;
+            color: white;
+        }
+
+        .toast-info {
+            background: #06b6d4;
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        hr {
+            border-color: #334155;
+            margin: 1rem 0;
+        }
+
+        .empty-row td {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .scanner-status {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-left: 4px solid #3b82f6;
+        }
+
+        .scan-animation {
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .tag-id {
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .nav-bar {
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+            .nav-bar h2 {
+                font-size: 1rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+                text-align: center;
+            }
+            .nav-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+                flex: 1;
+                text-align: center;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            .stat-box {
+                padding: 1rem;
+            }
+            .stat-box h2 {
+                font-size: 1.5rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 1rem;
+            }
+            th, td {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+            .action-buttons button {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.7rem;
+            }
+            .toast {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                text-align: center;
+            }
+            .modal-content {
+                padding: 1rem;
+                width: 95%;
+            }
+            .tag-id {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .nav-bar h2 {
+                text-align: center;
+                margin-right: 0;
+            }
+            .nav-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <h2>Livestock Management System</h2>
+        <button class="nav-btn active" onclick="showPage('dashboard')">Dashboard</button>
+        <button class="nav-btn" onclick="showPage('animals')">Animals</button>
+        <button class="nav-btn" onclick="showPage('health')">Health Records</button>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Page -->
+        <div id="dashboardPage">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h2 id="totalAnimals">0</h2>
+                    <p>Total Animals</p>
+                </div>
+                <div class="stat-box">
+                    <h2 id="totalHealth">0</h2>
+                    <p>Health Records</p>
+                </div>
+                <div class="stat-box">
+                    <h2 id="totalMale">0</h2>
+                    <p>Male Animals</p>
+                </div>
+                <div class="stat-box">
+                    <h2 id="totalFemale">0</h2>
+                    <p>Female Animals</p>
+                </div>
+            </div>
+
+            <!-- RFID Scanner Status Card -->
+            <div class="card scanner-status">
+                <h3>RFID Scanner Status</h3>
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                    <div class="stat-box">
+                        <h4>Last Scanned Tag</h4>
+                        <p id="lastTagId" class="tag-id">---</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Last Scan Time</h4>
+                        <p id="lastScanTime">---</p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>System Mode</h4>
+                        <p id="systemMode"><span class="badge badge-info">Normal</span></p>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Total Scans Today</h4>
+                        <p id="totalScans">0</p>
+                    </div>
+                </div>
+                <div id="lastAnimalInfo" style="margin-top: 15px; padding: 12px; background: #0f172a; border-radius: 8px;">
+                    <strong>Last Scanned Animal:</strong> 
+                    <span id="lastAnimalName">---</span>
+                    <span id="lastAnimalStatus" style="margin-left: 15px;"></span>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.8rem; color: #94a3b8;">
+                    Tip: Press the button on ESP32 to toggle between NORMAL and REGISTER mode
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Recent Health Activities</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Date</th><th>Tag ID</th><th>Type</th><th>Status</th><th>Veterinarian</th></tr>
+                        </thead>
+                        <tbody id="recentHealth"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animals Page -->
+        <div id="animalsPage" class="hidden">
+            <div class="card">
+                <h3>Register New Animal</h3>
+                <form id="animalForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tag ID * (RFID Hex)</label>
+                            <input type="text" id="tagId" placeholder="Example: A1B2C3D4" required>
+                            <small style="color: #94a3b8;">Enter the 8-character hex code from RFID tag</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" id="animalname" placeholder="Animal Name">
+                        </div>
+                        <div class="form-group">
+                            <label>Type *</label>
+                            <select id="animaltype" required>
+                                <option value="">Select</option>
+                                <option value="Cow">Cow</option>
+                                <option value="Goat">Goat</option>
+                                <option value="Sheep">Sheep</option>
+                                <option value="Pig">Pig</option>
+                                <option value="Chicken">Chicken</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Sex *</label>
+                            <select id="sex" required>
+                                <option value="">Select</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Breed</label>
+                            <input type="text" id="breed" placeholder="Breed">
+                        </div>
+                        <div class="form-group">
+                            <label>Birth Date</label>
+                            <input type="date" id="birthdate">
+                        </div>
+                        <div class="form-group">
+                            <label>Owner Contact</label>
+                            <input type="text" id="ownerContact" placeholder="Phone Number">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Register Animal</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Animal Records</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>Tag ID</th><th>Name</th><th>Type</th><th>Sex</th><th>Breed</th><th>Birth Date</th><th>Owner</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="animalTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Page -->
+        <div id="healthPage" class="hidden">
+            <div class="card">
+                <h3>Add Health Record</h3>
+                <form id="healthForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tag ID *</label>
+                            <input type="text" id="h_tagId" placeholder="RFID Tag ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="h_type">
+                                <option value="Vaccination">Vaccination</option>
+                                <option value="Disease">Disease</option>
+                                <option value="Checkup">Checkup</option>
+                                <option value="Treatment">Treatment</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="h_status">
+                                <option value="Healthy">Healthy</option>
+                                <option value="Sick">Sick</option>
+                                <option value="Recovering">Recovering</option>
+                                <option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Temperature (Celsius)</label>
+                            <input type="number" id="temperature" step="0.1" placeholder="38.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="startdate">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="date" id="enddate">
+                        </div>
+                        <div class="form-group">
+                            <label>Next Event Date</label>
+                            <input type="date" id="nexteventdate">
+                        </div>
+                        <div class="form-group">
+                            <label>Veterinarian Name</label>
+                            <input type="text" id="vetName">
+                        </div>
+                        <div class="form-group">
+                            <label>Veterinarian Contact</label>
+                            <input type="text" id="vetcontact">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary">Save Record</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Health Records</h3>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>ID</th><th>Tag ID</th><th>Type</th><th>Status</th><th>Temp</th><th>Start Date</th><th>End Date</th><th>Next Event</th><th>Vet Name</th><th>Notes</th><th>Current</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="healthTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Animal Modal -->
+    <div id="editAnimalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Animal</h3>
+                <button class="close-btn" onclick="closeAnimalModal()">&times;</button>
+            </div>
+            <form id="editAnimalForm">
+                <input type="hidden" id="edit_tagId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="edit_name">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="edit_type">
+                            <option value="Cow">Cow</option>
+                            <option value="Goat">Goat</option>
+                            <option value="Sheep">Sheep</option>
+                            <option value="Pig">Pig</option>
+                            <option value="Chicken">Chicken</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sex</label>
+                        <select id="edit_sex">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Breed</label>
+                        <input type="text" id="edit_breed">
+                    </div>
+                    <div class="form-group">
+                        <label>Birth Date</label>
+                        <input type="date" id="edit_birthdate">
+                    </div>
+                    <div class="form-group">
+                        <label>Owner Contact</label>
+                        <input type="text" id="edit_ownerContact">
+                    </div>
+                </div>
+                <hr>
+                <button type="submit" class="btn-primary">Update Animal</button>
+                <button type="button" onclick="closeAnimalModal()" class="btn-warning">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Health Record Modal -->
+    <div id="editHealthModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Health Record</h3>
+                <button class="close-btn" onclick="closeHealthModal()">&times;</button>
+            </div>
+            <form id="editHealthForm">
+                <input type="hidden" id="edit_health_id">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Tag ID *</label>
+                        <input type="text" id="edit_health_tagId" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="edit_health_type">
+                            <option value="Vaccination">Vaccination</option>
+                            <option value="Disease">Disease</option>
+                            <option value="Checkup">Checkup</option>
+                            <option value="Treatment">Treatment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="edit_health_status">
+                            <option value="Healthy">Healthy</option>
+                            <option value="Sick">Sick</option>
+                            <option value="Recovering">Recovering</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Temperature (Celsius)</label>
+                        <input type="number" id="edit_health_temperature" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="edit_health_startdate">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="edit_health_enddate">
+                    </div>
+                    <div class="form-group">
+                        <label>Next Event Date</label>
+                        <input type="date" id="edit_health_nexteventdate">
+                    </div>
+                    <div class="form-group">
+                        <label>Veterinarian Name</label>
+                        <input type="text" id="edit_health_vetname">
+                    </div>
+                    <div class="form-group">
+                        <label>Veterinarian Contact</label>
+                        <input type="text" id="edit_health_vetcontact">
+                    </div>
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea id="edit_health_notes" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Is Current</label>
+                        <select id="edit_health_iscurrent">
+                            <option value="1">Yes - Current</option>
+                            <option value="0">No - Historical</option>
+                        </select>
+                    </div>
+                </div>
+                <hr>
+                <button type="submit" class="btn-primary">Update Health Record</button>
+                <button type="button" onclick="closeHealthModal()" class="btn-warning">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let lastScanData = {
+            tagId: null,
+            timestamp: null,
+            animalName: null,
+            status: null
+        };
+
+        function showToast(message, isError = false, isInfo = false) {
+            const toast = document.createElement('div');
+            if (isError) {
+                toast.className = 'toast toast-error';
+            } else if (isInfo) {
+                toast.className = 'toast toast-info';
+            } else {
+                toast.className = 'toast toast-success';
+            }
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                if(toast && toast.remove) toast.remove();
+            }, 3000);
+        }
+
+        function showPage(page) {
+            const dashboardPage = document.getElementById('dashboardPage');
+            const animalsPage = document.getElementById('animalsPage');
+            const healthPage = document.getElementById('healthPage');
+            
+            if (dashboardPage) dashboardPage.style.display = page === 'dashboard' ? 'block' : 'none';
+            if (animalsPage) animalsPage.classList.toggle('hidden', page !== 'animals');
+            if (healthPage) healthPage.classList.toggle('hidden', page !== 'health');
+            
+            const navBtns = document.querySelectorAll('.nav-btn');
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.textContent.toLowerCase().includes(page)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            if(page === 'dashboard') loadDashboard();
+            if(page === 'animals') loadAnimals();
+            if(page === 'health') loadHealth();
+        }
+
+        function checkForNewScans() {
+            fetch('get_last_scan.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.tagId && data.tagId !== lastScanData.tagId) {
+                        lastScanData = {
+                            tagId: data.tagId,
+                            timestamp: data.scan_time,
+                            animalName: data.animal_name || 'Unknown',
+                            status: data.status || 'Unknown'
+                        };
+                        updateScannerDisplay();
+                        loadDashboard();
+                        showToast('New scan detected: ' + lastScanData.tagId, false, true);
+                    }
+                })
+                .catch(err => console.log('No scan endpoint yet'));
+        }
+
+        function updateScannerDisplay() {
+            const lastTagIdElem = document.getElementById('lastTagId');
+            const lastScanTimeElem = document.getElementById('lastScanTime');
+            const lastAnimalNameElem = document.getElementById('lastAnimalName');
+            const lastAnimalStatusElem = document.getElementById('lastAnimalStatus');
+            
+            if (lastTagIdElem && lastScanData.tagId) {
+                lastTagIdElem.textContent = lastScanData.tagId;
+                lastTagIdElem.classList.add('scan-animation');
+                setTimeout(() => lastTagIdElem.classList.remove('scan-animation'), 1000);
+            }
+            
+            if (lastScanTimeElem && lastScanData.timestamp) {
+                lastScanTimeElem.textContent = new Date(lastScanData.timestamp).toLocaleTimeString();
+            }
+            
+            if (lastAnimalNameElem) {
+                lastAnimalNameElem.textContent = lastScanData.animalName || '---';
+            }
+            
+            if (lastAnimalStatusElem && lastScanData.status) {
+                const isSick = lastScanData.status === 'Sick' || lastScanData.status === 'Critical';
+                lastAnimalStatusElem.innerHTML = `<span class="badge ${isSick ? 'badge-danger' : 'badge-success'}">${lastScanData.status}</span>`;
+            }
+        }
+
+        async function loadDashboard() {
+            try {
+                const animalsRes = await fetch('get_animals.php');
+                const animals = await animalsRes.json();
+                const healthRes = await fetch('get_health.php');
+                const health = await healthRes.json();
+                
+                document.getElementById('totalAnimals').textContent = Array.isArray(animals) ? animals.length : 0;
+                document.getElementById('totalHealth').textContent = Array.isArray(health) ? health.length : 0;
+                document.getElementById('totalMale').textContent = Array.isArray(animals) ? animals.filter(a => a.sex === 'Male').length : 0;
+                document.getElementById('totalFemale').textContent = Array.isArray(animals) ? animals.filter(a => a.sex === 'Female').length : 0;
+                
+                const today = new Date().toISOString().split('T')[0];
+                const todayScans = Array.isArray(health) ? health.filter(h => h.startdate === today || (h.createdat && h.createdat.includes(today))).length : 0;
+                document.getElementById('totalScans').textContent = todayScans;
+                
+                const recentHealth = document.getElementById('recentHealth');
+                const recent = Array.isArray(health) ? health.slice(0, 5) : [];
+                if (recent.length === 0) {
+                    recentHealth.innerHTML = '<tr class="empty-row"><td colspan="5">No health records found</td></tr>';
+                } else {
+                    recentHealth.innerHTML = recent.map(h => `
+                        <tr>
+                            <td>${h.startdate || (h.createdat ? h.createdat.split(' ')[0] : '-')}</td>
+                            <td class="tag-id">${h.tagid || '-'}</td>
+                            <td>${h.type || '-'}</td>
+                            <td><span class="badge ${h.status === 'Healthy' ? 'badge-success' : 'badge-danger'}">${h.status || '-'}</span></td>
+                            <td>${h.vetname || '-'}</td>
+                        </tr>
+                    `).join('');
+                }
+                
+                checkForNewScans();
+            } catch(e) {
+                console.error('Dashboard error:', e);
+                showToast('Error loading dashboard data', true);
+            }
+        }
+
+        async function loadAnimals() {
+            try {
+                const res = await fetch('get_animals.php');
+                const animals = await res.json();
+                const animalTable = document.getElementById('animalTable');
+                
+                if (!Array.isArray(animals) || animals.length === 0) {
+                    animalTable.innerHTML = '<tr class="empty-row"><td colspan="8">No animals found. Register your first animal above.</td></tr>';
+                } else {
+                    animalTable.innerHTML = animals.map(a => `
+                        <tr>
+                            <td class="tag-id">${a.tagId || a.tagid || ''}</td>
+                            <td>${a.animalname || ''}</td>
+                            <td>${a.animaltype || ''}</td>
+                            <td>${a.sex || ''}</td>
+                            <td>${a.breed || ''}</td>
+                            <td>${a.birthdate || ''}</td>
+                            <td>${a.ownerContact || ''}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning" onclick="editAnimal('${a.tagId || a.tagid}')">Edit</button>
+                                <button class="btn-danger" onclick="deleteAnimal('${a.tagId || a.tagid}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch(e) {
+                console.error('Load animals error:', e);
+                showToast('Error loading animals', true);
+            }
+        }
+
+        async function loadHealth() {
+            try {
+                const res = await fetch('get_health.php');
+                const records = await res.json();
+                const healthTable = document.getElementById('healthTable');
+                
+                if (!Array.isArray(records) || records.length === 0) {
+                    healthTable.innerHTML = '<tr class="empty-row"><td colspan="12">No health records found. Add your first record above.</td></tr>';
+                } else {
+                    healthTable.innerHTML = records.map(h => `
+                        <tr>
+                            <td>${h.id || ''}</td>
+                            <td class="tag-id">${h.tagid || ''}</td>
+                            <td>${h.type || ''}</td>
+                            <td><span class="badge ${h.status === 'Healthy' ? 'badge-success' : h.status === 'Sick' ? 'badge-danger' : 'badge-warning'}">${h.status || ''}</span></td>
+                            <td>${h.temperature ? h.temperature + '°C' : '-'}</td>
+                            <td>${h.startdate || ''}</td>
+                            <td>${h.enddate || ''}</td>
+                            <td>${h.nexteventdate || ''}</td>
+                            <td>${h.vetname || ''}</td>
+                            <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;">${h.notes || ''}</td>
+                            <td>${h.iscurrent ? '<span class="badge badge-success">Yes</span>' : '<span class="badge badge-info">No</span>'}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning" onclick="editHealthRecord(${h.id})">Edit</button>
+                                <button class="btn-danger" onclick="deleteHealthRecord(${h.id})">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch(e) {
+                console.error('Load health error:', e);
+                showToast('Error loading health records', true);
+            }
+        }
+
+        document.getElementById('animalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                tagId: document.getElementById('tagId').value.toUpperCase(),
+                animalname: document.getElementById('animalname').value,
+                animaltype: document.getElementById('animaltype').value,
+                sex: document.getElementById('sex').value,
+                breed: document.getElementById('breed').value,
+                birthdate: document.getElementById('birthdate').value,
+                ownerContact: document.getElementById('ownerContact').value
+            };
+            
+            try {
+                const res = await fetch('create_animal.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.error) throw new Error(result.error);
+                showToast('Animal registered successfully');
+                document.getElementById('animalForm').reset();
+                loadAnimals();
+                loadDashboard();
+            } catch(e) {
+                showToast(e.message, true);
+            }
+        });
+
+        document.getElementById('healthForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                tagId: document.getElementById('h_tagId').value.toUpperCase(),
+                type: document.getElementById('h_type').value,
+                status: document.getElementById('h_status').value,
+                notes: document.getElementById('notes').value,
+                temperature: parseFloat(document.getElementById('temperature').value) || null,
+                startdate: document.getElementById('startdate').value,
+                enddate: document.getElementById('enddate').value,
+                nexteventdate: document.getElementById('nexteventdate').value,
+                vetName: document.getElementById('vetName').value,
+                vetcontact: document.getElementById('vetcontact').value
+            };
+            
+            try {
+                const res = await fetch('create_health.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.error) throw new Error(result.error);
+                showToast('Health record added successfully');
+                document.getElementById('healthForm').reset();
+                loadHealth();
+                loadDashboard();
+            } catch(e) {
+                showToast(e.message, true);
+            }
+        });
+
+        window.editAnimal = async (tagId) => {
+            try {
+                const res = await fetch('get_animals.php');
+                const animals = await res.json();
+                const animal = animals.find(a => (a.tagId || a.tagid) == tagId);
+                if(animal) {
+                    document.getElementById('edit_tagId').value = tagId;
+                    document.getElementById('edit_name').value = animal.animalname || '';
+                    document.getElementById('edit_type').value = animal.animaltype || 'Cow';
+                    document.getElementById('edit_sex').value = animal.sex || 'Male';
+                    document.getElementById('edit_breed').value = animal.breed || '';
+                    document.getElementById('edit_birthdate').value = animal.birthdate || '';
+                    document.getElementById('edit_ownerContact').value = animal.ownerContact || '';
+                    document.getElementById('editAnimalModal').style.display = 'flex';
+                }
+            } catch(e) {
+                showToast('Error loading animal', true);
+            }
+        };
+
+        window.editHealthRecord = async (id) => {
+            try {
+                const res = await fetch('get_health.php');
+                const records = await res.json();
+                const record = records.find(r => r.id == id);
+                if(record) {
+                    document.getElementById('edit_health_id').value = record.id;
+                    document.getElementById('edit_health_tagId').value = record.tagid || '';
+                    document.getElementById('edit_health_type').value = record.type || 'Vaccination';
+                    document.getElementById('edit_health_status').value = record.status || 'Healthy';
+                    document.getElementById('edit_health_temperature').value = record.temperature || '';
+                    document.getElementById('edit_health_startdate').value = record.startdate || '';
+                    document.getElementById('edit_health_enddate').value = record.enddate || '';
+                    document.getElementById('edit_health_nexteventdate').value = record.nexteventdate || '';
+                    document.getElementById('edit_health_vetname').value = record.vetname || '';
+                    document.getElementById('edit_health_vetcontact').value = record.vetcontact || '';
+                    document.getElementById('edit_health_notes').value = record.notes || '';
+                    document.getElementById('edit_health_iscurrent').value = record.iscurrent || '1';
+                    document.getElementById('editHealthModal').style.display = 'flex';
+                }
+            } catch(e) {
+                showToast('Error loading health record', true);
+            }
+        };
+
+        document.getElementById('editAnimalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                tagId: document.getElementById('edit_tagId').value,
+                animalname: document.getElementById('edit_name').value,
+                animaltype: document.getElementById('edit_type').value,
+                sex: document.getElementById('edit_sex').value,
+                breed: document.getElementById('edit_breed').value,
+                birthdate: document.getElementById('edit_birthdate').value,
+                ownerContact: document.getElementById('edit_ownerContact').value
+            };
+            
+            try {
+                const res = await fetch('update_animal.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.error) throw new Error(result.error);
+                showToast('Animal updated successfully');
+                closeAnimalModal();
+                loadAnimals();
+                loadDashboard();
+            } catch(e) {
+                showToast(e.message, true);
+            }
+        });
+
+        document.getElementById('editHealthForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                id: parseInt(document.getElementById('edit_health_id').value),
+                tagId: document.getElementById('edit_health_tagId').value,
+                type: document.getElementById('edit_health_type').value,
+                status: document.getElementById('edit_health_status').value,
+                temperature: parseFloat(document.getElementById('edit_health_temperature').value) || null,
+                startdate: document.getElementById('edit_health_startdate').value,
+                enddate: document.getElementById('edit_health_enddate').value,
+                nexteventdate: document.getElementById('edit_health_nexteventdate').value,
+                vetName: document.getElementById('edit_health_vetname').value,
+                vetcontact: document.getElementById('edit_health_vetcontact').value,
+                notes: document.getElementById('edit_health_notes').value,
+                iscurrent: parseInt(document.getElementById('edit_health_iscurrent').value)
+            };
+            
+            try {
+                const res = await fetch('update_health.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if(result.error) throw new Error(result.error);
+                showToast('Health record updated successfully');
+                closeHealthModal();
+                loadHealth();
+                loadDashboard();
+            } catch(e) {
+                showToast(e.message, true);
+            }
+        });
+
+        window.deleteAnimal = async (tagId) => {
+            if(confirm('Delete this animal and all its health records?')) {
+                try {
+                    const res = await fetch(`delete.php?tagId=${encodeURIComponent(tagId)}`);
+                    const result = await res.json();
+                    showToast('Animal deleted successfully');
+                    loadAnimals();
+                    loadDashboard();
+                    loadHealth();
+                } catch(e) {
+                    showToast('Error deleting animal', true);
+                }
+            }
+        };
+
+        window.deleteHealthRecord = async (id) => {
+            if(confirm('Delete this health record?')) {
+                try {
+                    const res = await fetch(`delete_health.php?id=${id}`);
+                    const result = await res.json();
+                    showToast('Health record deleted');
+                    loadHealth();
+                    loadDashboard();
+                } catch(e) {
+                    showToast('Error deleting record', true);
+                }
+            }
+        };
+
+        function closeAnimalModal() {
+            document.getElementById('editAnimalModal').style.display = 'none';
+        }
+
+        function closeHealthModal() {
+            document.getElementById('editHealthModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const animalModal = document.getElementById('editAnimalModal');
+            const healthModal = document.getElementById('editHealthModal');
+            if (event.target === animalModal) {
+                closeAnimalModal();
+            }
+            if (event.target === healthModal) {
+                closeHealthModal();
+            }
+        }
+
+        setInterval(() => {
+            checkForNewScans();
+        }, 3000);
+
+        showPage('dashboard');
+    </script>
+</body>
+</html>
